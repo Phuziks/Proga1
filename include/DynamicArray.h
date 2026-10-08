@@ -15,10 +15,10 @@ public:
     std::size_t size() const;
     void print() const;
 
-    bool set(std::size_t index, int value);
+    void set(std::size_t index, int value);
     int get(std::size_t index) const;
 
-    bool pushBack(int value);
+    void pushBack(int value);
 
     void add(const DynamicArray& other);
     void sub(const DynamicArray& other);
@@ -27,6 +27,6 @@ private:
     int* data_;
     std::size_t size_;
 
-    bool isIndexValid(std::size_t index) const;
-    static bool isValueValid(int value);
+    void checkIndex(std::size_t index) const;
+    static void checkValue(int value);
 };
