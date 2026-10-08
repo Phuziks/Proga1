@@ -1,6 +1,8 @@
 #include "DynamicArray.h"
 
 #include <iostream>
+#include <stdexcept>
+#include <string>
 
 DynamicArray::DynamicArray(std::size_t size)
     : data_(new int[size]()), size_(size) {
@@ -32,36 +34,20 @@ void DynamicArray::print() const {
     std::cout << "]" << std::endl;
 }
 
-bool DynamicArray::set(std::size_t index, int value) {
-    if (!isIndexValid(index)) {
-        std::cerr << "Ошибка set: индекс " << index << " вне границ массива (размер "
-                  << size_ << ")" << std::endl;
-        return false;
-    }
-    if (!isValueValid(value)) {
-        std::cerr << "Ошибка set: значение " << value << " вне промежутка ["
-                  << MIN_VALUE << ", " << MAX_VALUE << "]" << std::endl;
-        return false;
-    }
+void DynamicArray::set(std::size_t index, int value) {
+    checkIndex(index);
+    checkValue(value);
     data_[index] = value;
-    return true;
 }
 
 int DynamicArray::get(std::size_t index) const {
-    if (!isIndexValid(index)) {
-        std::cerr << "Ошибка get: индекс " << index << " вне границ массива (размер "
-                  << size_ << ")" << std::endl;
-        return 0;
-    }
+    checkIndex(index);
     return data_[index];
 }
 
-bool DynamicArray::pushBack(int value) {
-    if (!isValueValid(value)) {
-        std::cerr << "Ошибка pushBack: значение " << value << " вне промежутка ["
-                  << MIN_VALUE << ", " << MAX_VALUE << "]" << std::endl;
-        return false;
-    }
+void DynamicArray::pushBack(int value) {
+    checkValue(value);
+
     int* newData = new int[size_ + 1];
     for (std::size_t i = 0; i < size_; ++i) {
         newData[i] = data_[i];
@@ -71,7 +57,6 @@ bool DynamicArray::pushBack(int value) {
     delete[] data_;
     data_ = newData;
     ++size_;
-    return true;
 }
 
 void DynamicArray::add(const DynamicArray& other) {
@@ -88,10 +73,17 @@ void DynamicArray::sub(const DynamicArray& other) {
     }
 }
 
-bool DynamicArray::isIndexValid(std::size_t index) const {
-    return index < size_;
+void DynamicArray::checkIndex(std::size_t index) const {
+    if (index >= size_) {
+        throw std::out_of_range("индекс " + std::to_string(index) +
+                                " вне границ массива (размер " + std::to_string(size_) + ")");
+    }
 }
 
-bool DynamicArray::isValueValid(int value) {
-    return value >= MIN_VALUE && value <= MAX_VALUE;
+void DynamicArray::checkValue(int value) {
+    if (value < MIN_VALUE || value > MAX_VALUE) {
+        throw std::invalid_argument("значение " + std::to_string(value) + " вне промежутка [" +
+                                    std::to_string(MIN_VALUE) + ", " +
+                                    std::to_string(MAX_VALUE) + "]");
+    }
 }
