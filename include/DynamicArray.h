@@ -14,6 +14,24 @@ public:
     static const int MIN_VALUE = -100;
     static const int MAX_VALUE = 100;
 
+    class Reference {
+    public:
+        Reference(DynamicArray& arr, std::size_t index) : index_(index), arr(arr) {
+
+        }
+        Reference& operator=(const T& value) {
+            arr.set(index_, value);
+            return *this;
+
+        }
+        operator T&() const {
+            return arr.get(index_);
+        }
+    private:
+        DynamicArray& arr;
+        std::size_t index_;
+    };
+
     explicit DynamicArray(std::size_t size)
         : data_(new T[size]()), size_(size) {
     }
@@ -106,6 +124,59 @@ public:
         }
         out << "]";
         return out;
+    }
+
+    Reference operator[](std::size_t index) {
+        if (index >= size_) {
+            throw std::out_of_range("out of range");
+        }
+        return Reference(*this, index);
+    }
+
+    bool operator==(DynamicArray& other) {
+        if (size_ != other.size_) {
+            return false;
+        }
+        for (std::size_t i = 0; i < size_; ++i) {
+            if (data_[i] != other.data_[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    DynamicArray& operator+=(const DynamicArray& other) {
+        add(other);
+        return *this;
+    }
+
+    DynamicArray& operator-=(const DynamicArray& other) {
+        sub(other);
+        return *this;
+    }
+
+    DynamicArray& operator+=(const T& value) {
+        for (std::size_t i = 0; i < size_; ++i) {
+            data_[i] = data_[i] + value;
+        }
+        return *this;
+    }
+
+    DynamicArray& operator-=(const T& value) {
+        for (std::size_t i = 0; i < size_; ++i) {
+            data_[i] = data_[i] - value;
+        }
+        return *this;
+    }
+
+    T* begin() { return data_; }
+    T* end()   { return data_ + size_; }
+
+    const T* begin() const { return data_; }
+    const T* end()   const { return data_ + size_; }
+
+    bool operator!=(DynamicArray& other) {
+        return !(*this == other);
     }
 
 private:
