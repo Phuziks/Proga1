@@ -1,4 +1,4 @@
-#include "DynamicArray.h"
+#include "../include/DynamicArray.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -11,6 +11,8 @@ int main() {
     ints.set(0, 1);
     ints.set(1, 2);
     ints.set(2, 3);
+
+
     std::cout << "DynamicArray<int>: " << ints << std::endl;
     try {
         ints.set(0, 500);
@@ -70,10 +72,99 @@ int main() {
     words.set(0, "a");
     words.set(1, "b");
     try {
-        strings.distance(words);
+        return strings.distance(words);
     } catch (const std::bad_typeid& e) {
         std::cout << "Строки: " << e.what() << std::endl;
     }
+
+        std::cout << std::endl << "Задание 4: operator[] через Reference" << std::endl;
+    DynamicArray<int> ref(3);
+    ref[0] = 10;
+    ref[1] = 20;
+    ref[2] = 30;
+    std::cout << "после присваивания через []: " << ref << std::endl;
+
+
+    // проверка границ
+    try {
+        ref[10] = 5;
+    } catch (const std::out_of_range& e) {
+        std::cout << "ref[10]: " << e.what() << std::endl;
+    }
+
+    // проверка диапазона значений через set (Reference вызывает set)
+    try {
+        ref[0] = 500;
+    } catch (const std::invalid_argument& e) {
+        std::cout << "ref[0] = 500: " << e.what() << std::endl;
+    }
+
+    std::cout << std::endl << "Задание 5: итераторы begin()/end()" << std::endl;
+    DynamicArray<int> iterable(4);
+    iterable.set(0, 1);
+    iterable.set(1, 2);
+    iterable.set(2, 3);
+    iterable.set(3, 4);
+
+    std::cout << "for (const auto& x : iterable): ";
+    for (const auto& v : iterable) {
+        std::cout << v << " ";
+    }
+    std::cout << std::endl;
+
+    // изменяемый обход
+    for (auto& v : iterable) {
+        v = v * 2;
+    }
+    std::cout << "после удвоения через for (auto&): " << iterable << std::endl;
+
+    // const-версия begin()/end()
+    const DynamicArray<int>& constRef = iterable;
+    std::cout << "const-обход: ";
+    for (const auto& v : constRef) {
+        std::cout << v << " ";
+    }
+    std::cout << std::endl;
+
+
+
+    std::cout << std::endl << "Задание 6: == и !=" << std::endl;
+    DynamicArray<int> eq1(3);
+    eq1.set(0, 1); eq1.set(1, 2); eq1.set(2, 3);
+    DynamicArray<int> eq2(3);
+    eq2.set(0, 1); eq2.set(1, 2); eq2.set(2, 3);
+
+
+    std::cout << "eq1 == eq2: " << (eq1 == eq2) << std::endl;
+
+    std::cout << std::endl << "Задание 7: += и -= с массивом" << std::endl;
+    DynamicArray<int> acc1(3);
+    acc1.set(0, 1); acc1.set(1, 2); acc1.set(2, 3);
+    DynamicArray<int> acc2(3);
+    acc2.set(0, 10); acc2.set(1, 20); acc2.set(2, 30);
+
+    std::cout << "acc1 = " << acc1 << std::endl;
+    acc1 += acc2;
+    std::cout << "acc1 += acc2 -> " << acc1 << std::endl;
+    acc1 -= acc2;
+    std::cout << "acc1 -= acc2 -> " << acc1 << std::endl;
+
+    // += с массивом другого размера (недостающие = T())
+    DynamicArray<int> small(2);
+    small.set(0, 100); small.set(1, 100);
+    DynamicArray<int> big(4);
+    big.set(0, 1); big.set(1, 1); big.set(2, 1); big.set(3, 1);
+    big += small;
+    std::cout << "big(4) += small(2) -> " << big << std::endl;
+
+    std::cout << std::endl << "Задание 8: += и -= со скаляром" << std::endl;
+    DynamicArray<int> scal(3);
+    scal.set(0, 1); scal.set(1, 2); scal.set(2, 3);
+    std::cout << "scal = " << scal << std::endl;
+    scal += 10;
+    std::cout << "scal += 10 -> " << scal << std::endl;
+    scal -= 5;
+    std::cout << "scal -= 5  -> " << scal << std::endl;
 
     return 0;
 }
