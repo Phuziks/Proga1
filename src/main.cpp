@@ -166,5 +166,51 @@ int main() {
     scal -= 5;
     std::cout << "scal -= 5  -> " << scal << std::endl;
 
+        std::cout << std::endl << "Задание 9: конструктор копирования" << std::endl;
+    DynamicArray<int> original(3);
+    original.set(0, 1); original.set(1, 2); original.set(2, 3);
+    DynamicArray<int> copied(original);
+    std::cout << "original = " << original << std::endl;
+    std::cout << "copied   = " << copied   << std::endl;
+    copied.set(0, 100);
+    std::cout << "после copied.set(0, 100):" << std::endl;
+    std::cout << "original = " << original << " (не изменился)" << std::endl;
+    std::cout << "copied   = " << copied   << std::endl;
+
+    std::cout << std::endl << "Задание 10: копирующее присваивание" << std::endl;
+    DynamicArray<int> target(2);
+    target.set(0, 7); target.set(1, 8);
+    std::cout << "target до: " << target << std::endl;
+    target = original;
+    std::cout << "target после target = original: " << target << std::endl;
+
+    // самоприсваивание
+    target = target;
+    std::cout << "target после target = target: " << target << " (не сломался)" << std::endl;
+
+    std::cout << std::endl << "Задание 11: move-конструктор" << std::endl;
+    DynamicArray<int> movable(3);
+    movable.set(0, 10); movable.set(1, 20); movable.set(2, 30);
+    std::cout << "movable до: " << movable << std::endl;
+    DynamicArray<int> moved(std::move(movable));
+    std::cout << "moved (из movable): " << moved << std::endl;
+    std::cout << "movable после move: size = " << movable.size()
+              << ", содержимое = " << movable << std::endl;
+
+    std::cout << std::endl << "Задание 12: move-присваивание" << std::endl;
+    DynamicArray<int> moveTarget(2);
+    moveTarget.set(0, -1); moveTarget.set(1, -2);
+    std::cout << "moveTarget до: " << moveTarget << std::endl;
+
+    DynamicArray<int> moveSource(3);
+    moveSource.set(0, 5); moveSource.set(1, 6); moveSource.set(2, 7);
+    std::cout << "moveSource до: " << moveSource << std::endl;
+
+    moveTarget = std::move(moveSource);
+    std::cout << "moveTarget после move: " << moveTarget << std::endl;
+    std::cout << "moveSource после move: size = " << moveSource.size()
+              << ", содержимое = " << moveSource << std::endl;
+
+
     return 0;
 }
