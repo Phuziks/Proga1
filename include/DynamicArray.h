@@ -179,6 +179,39 @@ public:
         return !(*this == other);
     }
 
+    DynamicArray& operator=(DynamicArray& other) {
+        if (this == &other) {
+            return *this;
+        }
+
+        T* newData = new T[other.size_]();
+        for (std::size_t i = 0; i < other.size_; ++i) {
+            newData[i] = other.data_[i];
+        }
+
+        delete[] data_;
+        data_ = newData;
+        size_ = other.size_;
+        return *this;
+    }
+
+    DynamicArray(DynamicArray&& other) : data_(other.data_), size_(other.size_) {
+        other.data_ = nullptr;
+        other.size_ = 0;
+    }
+
+    DynamicArray& operator=(DynamicArray&& other) {
+        if (this == &other) {
+            return *this;
+        }
+        delete[] data_;
+        data_ = other.data_;
+        size_ = other.size_;
+        other.data_ = nullptr;
+        other.size_ = 0;
+        return *this;
+    }
+
 private:
     T* data_;
     std::size_t size_;
